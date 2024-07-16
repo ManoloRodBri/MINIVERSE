@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+  <script src="https://p5play.org/v3/planck.min.js"></script>
+  <script src="https://p5play.org/v3/p5play.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&display=swap" rel="stylesheet">
+
+
+
+  <link rel="stylesheet" type="text/css" href="../estilos.css">
+  <meta charset="utf-8" />
+  <title>MINIVERSE</title>
+</head>
+
+<body>
+  <main id="mainContent">
+    <button id="openButton" onclick="abrirModal();"></button>
+  </main>
+  <div id="modal3" style="display: none;">
+    <button id="closeButton" onclick="cerrarModal();"></button>
+
+  </div>
+  <a href="../Lobby/index.html" rel="back" class="climb"></a>
+  <script src="sketch.js"></script>
+  <script>
+    let juegoPausado = false;
+
+    function abrirModal() {
+      document.getElementById('modal3').style.display = "block";
+      juegoPausado = true;
+      noLoop();
+      document.getElementById('mainContent').classList.add('blurred');
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal3').style.display = "none";
+      juegoPausado = false;
+      loop(); // Reanudar el loop de p5.js
+      document.getElementById('mainContent').classList.remove('blurred');
+    }
+
+  </script>
+</body>
+
+</html>

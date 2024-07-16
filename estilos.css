@@ -1,0 +1,251 @@
+ a {
+   text-decoration: none;
+   text-align: center;
+   background-color: white;
+   color: black;
+   border-radius: 10px;
+   width: 100px;
+   height: 20px;
+   display: block;
+   line-height: 20px;
+   padding: 3px;
+   transition: all 1s;
+
+ }
+
+ #closeButton {
+   position: absolute;
+   background-color: rgba(255, 255, 255, 0);
+   top: 90%;
+   right: 145px;
+   width: 20px;
+   height: 20px;
+   background-image: url("../imag_gif/cross\ black.png");
+   /* Reemplaza con la ruta de tu imagen */
+
+
+   border: none;
+   cursor: pointer;
+ }
+
+ #openButton {
+   position: absolute;
+   background-color: rgba(0, 0, 0, 0);
+   top: 80px;
+   right: 27px;
+   width: 20px;
+   height: 20px;
+   background-image: url("../imag_gif/signo\ de\ pregunta\ png.png");
+   /* Reemplaza con la ruta de tu imagen */
+
+
+   border: none;
+   cursor: pointer;
+ }
+
+ #openButton:hover,
+ #closeButton:hover {
+
+   transform: scale(1.3);
+   transition: all 0.1s;
+ }
+
+
+
+ #modal {
+   background-image: url("../imag_gif/SPACE JUMP.gif");
+   background-size: 100%;
+   width: 300px;
+   height: 300px;
+   padding: 10px;
+   border-radius: 10px;
+   border: 10px solid white;
+   color: white;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   display: none;
+ }
+
+ #modal2 {
+   background-image: url("../imag_gif/GRAVITY SHIFT.gif");
+   background-size: 100%;
+   width: 300px;
+   height: 300px;
+   padding: 10px;
+   border-radius: 10px;
+   border: 10px solid white;
+   color: white;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   display: none;
+ }
+
+ #modal3 {
+   background-image: url("./imag_gif/CLIMB\ THROUGH.gif");
+   background-size: 100%;
+   width: 300px;
+   height: 300px;
+   padding: 10px;
+   border-radius: 10px;
+   border: 10px solid white;
+   color: white;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   display: none;
+ }
+
+ /* Efecto de desenfoque */
+ #mainContent.blurred {
+   filter: blur(3px);
+   pointer-events: none;
+   /* Evita la interacción con los elementos de fondo */
+ }
+
+ /* Asegúrate de que el modal no se vea afectado por el desenfoque */
+ #modal {
+   filter: none;
+   pointer-events: auto;
+ }
+
+ .gravity {
+   background-color: rgba(255, 255, 255, 0);
+
+   width: 35px;
+   height: 35px;
+   line-height: 2px;
+   /* Proporcional al ancho de la ventana */
+   font-weight: bold;
+   padding: 1px 2px;
+   /* Proporcional al ancho de la ventana */
+   position: absolute;
+   top: 45px;
+   right: 0px;
+   transform: translate(-50%, -50%);
+   text-align: center;
+
+   background-image: url("./imag_gif/gravity\ shift.svg");
+   /* Reemplaza con la ruta de tu imagen */
+   background-size: contain;
+   /* Ajustar la imagen dentro del botón */
+   background-position: center;
+   background-repeat: no-repeat;
+   border: none;
+   cursor: pointer;
+
+ }
+
+ .gravity:hover {
+   filter: invert(1);
+   /* Invertir los colores */
+ }
+
+ .space {
+   background-color: rgba(255, 255, 255, 0);
+
+   width: 35px;
+   height: 35px;
+   line-height: 2px;
+   /* Proporcional al ancho de la ventana */
+   font-weight: bold;
+   padding: 1px 2px;
+   /* Proporcional al ancho de la ventana */
+   position: absolute;
+   top: 45px;
+   right: 0px;
+   transform: translate(-50%, -50%);
+   text-align: center;
+
+   background-image: url("./imag_gif/space\ jump.svg");
+   /* Reemplaza con la ruta de tu imagen */
+   background-size: contain;
+   /* Ajustar la imagen dentro del botón */
+   background-position: center;
+   background-repeat: no-repeat;
+   border: none;
+   cursor: pointer;
+
+ }
+
+ .space:hover {
+   filter: invert(1);
+   /* Invertir los colores */
+ }
+
+ .climb {
+   background-color: rgba(255, 255, 255, 0);
+
+   width: 35px;
+   height: 35px;
+   line-height: 2px;
+   /* Proporcional al ancho de la ventana */
+   font-weight: bold;
+   padding: 1px 2px;
+   /* Proporcional al ancho de la ventana */
+   position: absolute;
+   top: 45px;
+   right: 0px;
+   transform: translate(-50%, -50%);
+   text-align: center;
+
+   background-image: url("./imag_gif/climb\ through.svg");
+   /* Reemplaza con la ruta de tu imagen */
+   background-size: contain;
+   /* Ajustar la imagen dentro del botón */
+   background-position: center;
+   background-repeat: no-repeat;
+   border: none;
+   cursor: pointer;
+
+ }
+
+ .climb:hover {
+   filter: invert(1);
+   /* Invertir los colores */
+ }
+
+
+ #sound {
+   position: absolute;
+   background-color: rgba(0, 0, 0, 0);
+   bottom: 30px;
+   right: 27px;
+   width: 20px;
+   height: 20px;
+
+   border: none;
+   cursor: pointer;
+
+ }
+
+ #playButton {
+   position: absolute;
+   background-color: rgba(0, 0, 0, 0);
+   bottom: 30px;
+   right: 27px;
+   width: 20px;
+   height: 20px;
+
+   border: none;
+   cursor: pointer;
+ }
+
+ #playButton.play {
+   background-image: url("./imag_gif/sonido\ \ \(1\).svg");
+ }
+
+ #playButton.pause {
+   background-image: url("./imag_gif/sonido\ \ \(2\).svg");
+   /* Reemplaza con la ruta de tu imagen para el estado "off" */
+ }
+
+ #playButton:hover {
+
+   transform: scale(1.3);
+   transition: all 0.1s;
+ }

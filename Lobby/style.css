@@ -1,0 +1,59 @@
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    background: radial-gradient(circle, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 100%);
+  }
+
+  #overlay.hide {
+    animation: contractGradient 1s forwards;
+  }
+
+  @keyframes contractGradient {
+    0% {
+      opacity: 1;
+      background: radial-gradient(circle, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 100%);
+    }
+
+    100% {
+      opacity: 0;
+      background: radial-gradient(circle, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+  }
+
+  #sound {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0);
+    bottom: 30px;
+    right: 27px;
+    width: 20px;
+    height: 20px;
+
+    border: none;
+    cursor: pointer;
+
+  }
+
+  #playButton {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0);
+    bottom: 30px;
+    right: 27px;
+    width: 20px;
+    height: 20px;
+
+    border: none;
+    cursor: pointer;
+  }
+
+  #playButton.play {
+    background-image: url("../imag_gif/sonido\ \ \(1\).svg");
+  }
+
+  #playButton.pause {
+    background-image: url("../imag_gif/sonido\ \ \(2\).svg");
+  }

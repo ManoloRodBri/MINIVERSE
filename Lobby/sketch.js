@@ -2,11 +2,19 @@ let buttonSpheres = [];
 let buttonURLs = ["../ClimbThrough/index.html", "../SpaceJump/index.html", "../GravityShift/index.html"];
 let buttonNames = ["CLIMB THROUGH", "SPACE JUMP", "GRAVITY SHIFT"];
 let cam;
-let zoomLevel = 1000;
-const minZoom = 1000;
-const maxZoom = 1000;
 let particles = [];
 let song;
+
+// Camera orbit. The scene sways slowly on its own, leans toward the pointer and
+// can be dragged around; once let go it drifts back to its framing.
+const lookTarget = { x: -50, y: 80, z: 0 };
+const eyeOffset = { x: 50, y: -80, z: 1000 };
+const dragThreshold = 6;
+const canHover = window.matchMedia('(hover: hover)').matches;
+let sway = { yaw: 0, pitch: 0 };
+let drag = { yaw: 0, pitch: 0, vYaw: 0, vPitch: 0 };
+let press = null;
+let pointerSeen = false;
 
 function preload() {
   song = loadSound('../inicio.mp3');
@@ -39,23 +47,87 @@ function windowResized() {
 function draw() {
 
   background("black");
-  zoomLevel = constrain(zoomLevel, minZoom, maxZoom);
-  cam.setPosition(0, 0, zoomLevel);
-  cam.lookAt(-50, 80, 0);
-  orbitControl(2, 2);
-
+  updateOrbit();
 
   for (let i = 0; i < particles.length; i++) {
     particles[i].createParticle();
     particles[i].moveParticle();
     particles[i].joinParticles(particles.slice(i));
   }
+  let dragging = press && press.moved;
   for (let buttonSphere of buttonSpheres) {
     buttonSphere.display();
-    buttonSphere.checkHover(mouseX - width / 2, mouseY - height / 2);
+    buttonSphere.project();
+    buttonSphere.hover = !dragging && buttonSphere.contains(mouseX, mouseY);
   }
-  cursor(buttonSpheres.some(b => b.hover) ? HAND : ARROW);
+  if (dragging) cursor('grabbing');
+  else cursor(buttonSpheres.some(b => b.hover) ? HAND : 'grab');
   updateHoverLabel();
+}
+
+function updateOrbit() {
+  let t = millis() / 1000;
+  let targetYaw = Math.sin(t * 0.3) * 0.18;
+  let targetPitch = Math.sin(t * 0.23) * 0.06;
+  if (canHover && pointerSeen) {
+    targetYaw -= (mouseX / width - 0.5) * 0.2;
+    targetPitch += (mouseY / height - 0.5) * 0.1;
+  }
+  sway.yaw = lerp(sway.yaw, targetYaw, 0.05);
+  sway.pitch = lerp(sway.pitch, targetPitch, 0.05);
+
+  // Dragging turns the scene so the nearest sphere roughly follows the pointer.
+  if (press && mouseIsPressed) {
+    let dx = mouseX - press.lastX;
+    let dy = mouseY - press.lastY;
+    press.lastX = mouseX;
+    press.lastY = mouseY;
+    if (!press.moved && dist(mouseX, mouseY, press.x, press.y) > dragThreshold) press.moved = true;
+    if (press.moved) {
+      drag.vYaw = -dx * 0.0025;
+      drag.vPitch = dy * 0.002;
+    }
+  } else {
+    // Let go: keep a little of the throw, then settle back.
+    drag.vYaw *= 0.92;
+    drag.vPitch *= 0.92;
+    drag.yaw *= 0.96;
+    drag.pitch *= 0.96;
+  }
+  drag.yaw = constrain(drag.yaw + drag.vYaw, -1.2, 1.2);
+  drag.pitch = constrain(drag.pitch + drag.vPitch, -0.6, 0.6);
+
+  // p5's perspective doesn't widen with the screen, so on a narrow (portrait)
+  // screen the camera backs off until the three spheres fit side by side.
+  let fit = Math.max(1, 900 / width);
+  let yaw = sway.yaw + drag.yaw;
+  let pitch = sway.pitch + drag.pitch;
+  let x = (eyeOffset.x * Math.cos(yaw) + eyeOffset.z * Math.sin(yaw)) * fit;
+  let z = (-eyeOffset.x * Math.sin(yaw) + eyeOffset.z * Math.cos(yaw)) * fit;
+  let y = eyeOffset.y * fit * Math.cos(pitch) - z * Math.sin(pitch);
+  z = eyeOffset.y * fit * Math.sin(pitch) + z * Math.cos(pitch);
+  cam.camera(lookTarget.x + x, lookTarget.y + y, lookTarget.z + z, lookTarget.x, lookTarget.y, lookTarget.z, 0, 1, 0);
+}
+
+// Where a world point lands on screen with the current camera, and how many
+// pixels one world unit spans there.
+function projectToScreen(px, py, pz) {
+  let f = normalized(cam.centerX - cam.eyeX, cam.centerY - cam.eyeY, cam.centerZ - cam.eyeZ);
+  let r = normalized(f.y * cam.upZ - f.z * cam.upY, f.z * cam.upX - f.x * cam.upZ, f.x * cam.upY - f.y * cam.upX);
+  let u = { x: r.y * f.z - r.z * f.y, y: r.z * f.x - r.x * f.z, z: r.x * f.y - r.y * f.x };
+  let dx = px - cam.eyeX, dy = py - cam.eyeY, dz = pz - cam.eyeZ;
+  let depth = dx * f.x + dy * f.y + dz * f.z;
+  let k = (height / 2) / Math.tan(cam.cameraFOV / 2);
+  return {
+    x: width / 2 + (dx * r.x + dy * r.y + dz * r.z) / depth * k,
+    y: height / 2 + (dx * u.x + dy * u.y + dz * u.z) / depth * k,
+    scale: k / depth
+  };
+}
+
+function normalized(x, y, z) {
+  let l = Math.hypot(x, y, z);
+  return { x: x / l, y: y / l, z: z / l };
 }
 
 // Minimal signpost: the name of whatever you're pointing at, nothing else.
@@ -87,7 +159,10 @@ class SphereButton {
     this.hover = false;
     this.currentFill = fillColor;
     this.currentStroke = strokeColor;
-    this.rotationAngle = 90
+    this.rotationAngle = 90;
+    this.screenX = 0;
+    this.screenY = 0;
+    this.screenR = 0;
   }
 
   display() {
@@ -102,6 +177,7 @@ class SphereButton {
       this.currentFill = lerpColor(this.currentFill, this.fillColor, 0.1);
       this.currentStroke = this.strokeColor;
       stroke(this.currentStroke);
+      this.rotationAngle += 0.003;
     }
     fill(this.currentFill);
     rotateY(this.rotationAngle);
@@ -110,25 +186,35 @@ class SphereButton {
     pop();
   }
 
-
-  checkHover(mx, my) {
-    let distance = dist(mx, my, this.x, this.y);
-    this.hover = distance < this.r;
+  project() {
+    let p = projectToScreen(this.x, this.y, this.z);
+    this.screenX = p.x;
+    this.screenY = p.y;
+    this.screenR = this.r * p.scale;
   }
 
-  clicked() {
-    if (this.hover) {
-      window.location.href = this.url;
-    }
+  contains(mx, my) {
+    return dist(mx, my, this.screenX, this.screenY) < this.screenR;
   }
 }
 
-function mouseReleased() {
-  dragging = false;
+function mousePressed() {
+  press = { x: mouseX, y: mouseY, lastX: mouseX, lastY: mouseY, moved: false };
+}
 
-  for (let buttonSphere of buttonSpheres) {
-    buttonSphere.clicked();
-  }
+function mouseMoved() {
+  pointerSeen = true;
+}
+
+function mouseReleased() {
+  // A quick flick can start and end between two frames, before draw() sees it
+  // move, so the distance is checked here too.
+  let wasDrag = press && (press.moved || dist(mouseX, mouseY, press.x, press.y) > dragThreshold);
+  press = null;
+  if (wasDrag) return;
+
+  let target = buttonSpheres.find(b => b.contains(mouseX, mouseY));
+  if (target) window.location.href = target.url;
 }
 
 class Particle {
@@ -186,8 +272,3 @@ window.onload = function () {
 
   }, 1000);
 }
-
-
-
-
-

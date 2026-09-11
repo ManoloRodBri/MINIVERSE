@@ -25,6 +25,11 @@
     }
   }
 
+  /* Dragging the scene on a phone must not scroll or zoom the page. */
+  canvas {
+    touch-action: none;
+  }
+
   #hoverLabel {
     position: fixed;
     bottom: 48px;

@@ -1,5 +1,6 @@
 let buttonSpheres = [];
 let buttonURLs = ["../ClimbThrough/index.html", "../SpaceJump/index.html", "../GravityShift/index.html"];
+let buttonNames = ["CLIMB THROUGH", "SPACE JUMP", "GRAVITY SHIFT"];
 let cam;
 let zoomLevel = 1000;
 const minZoom = 1000;
@@ -8,27 +9,31 @@ let particles = [];
 let song;
 
 function preload() {
-  song = loadSound('inicio.mp3');
+  song = loadSound('../inicio.mp3');
 }
 
 function setup() {
 
   createCanvas(windowWidth, windowHeight, WEBGL);
+  frameRate(60);
   song.setVolume(0.5);
+  applySoundPreference(song, false);
   const playButton = document.getElementById('playButton');
-  playButton.addEventListener('click', toggleSound);
+  playButton.addEventListener('click', () => toggleSound(song));
 
   cam = createCamera();
-
-  esferas = [];
 
   for (let i = 0; i < width / 9; i++) {
     particles.push(new Particle());
   }
 
-  buttonSpheres.push(new SphereButton(-300, 50, 300, 90, 15, 5, color(0), color(255, 255, 255), buttonURLs[0]));
-  buttonSpheres.push(new SphereButton(0, -100, 50, 100, 15, 3, color(0), color(255), buttonURLs[1]));
-  buttonSpheres.push(new SphereButton(250, 200, 200, 90, 15, 2, color(0), color(255), buttonURLs[2]));
+  buttonSpheres.push(new SphereButton(-300, 50, 300, 90, 15, 5, color(0), color(255, 255, 255), buttonURLs[0], buttonNames[0]));
+  buttonSpheres.push(new SphereButton(0, -100, 50, 100, 15, 3, color(0), color(255), buttonURLs[1], buttonNames[1]));
+  buttonSpheres.push(new SphereButton(250, 200, 200, 90, 15, 2, color(0), color(255), buttonURLs[2], buttonNames[2]));
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
@@ -49,10 +54,27 @@ function draw() {
     buttonSphere.display();
     buttonSphere.checkHover(mouseX - width / 2, mouseY - height / 2);
   }
+  cursor(buttonSpheres.some(b => b.hover) ? HAND : ARROW);
+  updateHoverLabel();
+}
+
+// Minimal signpost: the name of whatever you're pointing at, nothing else.
+function updateHoverLabel() {
+  const label = document.getElementById('hoverLabel');
+  if (!label) return;
+
+  const hovered = buttonSpheres.find(b => b.hover);
+  if (hovered) {
+    if (label.textContent !== hovered.name) label.textContent = hovered.name;
+    label.classList.add('visible');
+  } else {
+    label.classList.remove('visible');
+  }
 }
 
 class SphereButton {
-  constructor(x, y, z, r, segX, segY, fillColor, strokeColor, url) {
+  constructor(x, y, z, r, segX, segY, fillColor, strokeColor, url, name) {
+    this.name = name;
     this.x = x;
     this.y = y;
     this.z = z;
@@ -91,13 +113,7 @@ class SphereButton {
 
   checkHover(mx, my) {
     let distance = dist(mx, my, this.x, this.y);
-    if (distance < this.r) {
-      this.hover = true;
-      cursor(ARROW);
-    } else {
-      this.hover = false;
-      cursor(ARROW);
-    }
+    this.hover = distance < this.r;
   }
 
   clicked() {
@@ -171,20 +187,6 @@ window.onload = function () {
   }, 1000);
 }
 
-function toggleSound() {
-  const playButton = document.getElementById('playButton');
-  if (song.isPlaying()) {
-    song.pause();
-    playButton.classList.remove('pause');
-    playButton.classList.add('play');
-  } else {
-    song.loop();
-    playButton.classList.remove('play');
-    playButton.classList.add('pause');
-  }
-
-
-}
 
 
 

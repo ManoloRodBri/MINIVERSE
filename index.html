@@ -2,10 +2,11 @@
 <html lang="en">
 
 <head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="minivers_estilos.css">
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="minivers_estilos.css">
   <title>MINIVERSE</title>
 </head>
 
@@ -15,9 +16,10 @@
     <h1>MINIVERSE</h1>
     <h1 class="lineas">MINIVERSE</h1>
   </main>
-  <button id="playButton" class="play"></button>
+  <button id="playButton" class="play" aria-label="Reproducir música"></button>
   <a href="javascript:void(0);" onclick="startTransition()">START_</a>
   <div id="overlay"></div>
+  <script src="shared/sound.js"></script>
   <script src="miniverse.js"></script>
 </body>
 

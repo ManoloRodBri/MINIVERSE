@@ -41,14 +41,21 @@ class Particle {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  frameRate(60);
   background('black');
   song.setVolume(0.5);
   for (let i = 0; i < width / 10; i++) {
     particles.push(new Particle());
   }
 
+  applySoundPreference(song, false);
+
   const playButton = document.getElementById('playButton');
-  playButton.addEventListener('click', toggleSound);
+  playButton.addEventListener('click', () => toggleSound(song));
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
@@ -69,17 +76,3 @@ function startTransition() {
   }, 1000); // Duración de la transición en milisegundos
 }
 
-function toggleSound() {
-  const playButton = document.getElementById('playButton');
-  if (song.isPlaying()) {
-    song.pause();
-    playButton.classList.remove('pause');
-    playButton.classList.add('play');
-  } else {
-    song.loop();
-    playButton.classList.remove('play');
-    playButton.classList.add('pause');
-  }
-
-
-}

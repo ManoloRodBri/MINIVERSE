@@ -25,6 +25,26 @@
     }
   }
 
+  #hoverLabel {
+    position: fixed;
+    bottom: 48px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.35em;
+    text-indent: 0.35em;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  #hoverLabel.visible {
+    opacity: 0.75;
+  }
+
   #sound {
     position: absolute;
     background-color: rgba(0, 0, 0, 0);

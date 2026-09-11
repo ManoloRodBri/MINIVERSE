@@ -6,6 +6,13 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 h1 {
   position: absolute;
   text-align: center;
@@ -19,7 +26,10 @@ h1 {
   transform-origin: center;
   font-size: 8vw;
   pointer-events: none;
-  margin: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  animation: titleBob 3.2s ease-in-out infinite;
 }
 
 .lineas {
@@ -35,7 +45,23 @@ h1 {
   transform-origin: 20% 50%;
   font-size: 8vw;
   pointer-events: none;
-  margin: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  animation: titleBob 3.2s ease-in-out infinite;
+  animation-delay: -0.45s;
+}
+
+@keyframes titleBob {
+
+  0%,
+  100% {
+    margin-top: 0;
+  }
+
+  50% {
+    margin-top: -16px;
+  }
 }
 
 @keyframes miniverse {
